@@ -51,3 +51,4 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
+          GITHUB_DEPLOY_KEY: ${{ secrets.REPO_DEPLOY_KEY }}

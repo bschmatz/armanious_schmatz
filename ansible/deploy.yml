@@ -8,6 +8,35 @@
     node_version: 20
 
   tasks:
+      - name: Ensure .ssh directory exists
+      file:
+        path: "/home/{{ app_user }}/.ssh"
+        state: directory
+        mode: '0700'
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+
+    - name: Add GitHub deploy key
+      copy:
+        content: "{{ lookup('env', 'GITHUB_DEPLOY_KEY') }}"
+        dest: "/home/{{ app_user }}/.ssh/github_deploy_key"
+        mode: '0600'
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+
+    - name: Configure SSH for GitHub
+      copy:
+        content: |
+          Host github.com
+            HostName github.com
+            User git
+            IdentityFile ~/.ssh/github_deploy_key
+            StrictHostKeyChecking no
+        dest: "/home/{{ app_user }}/.ssh/config"
+        mode: '0600'
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        
     - name: Update dnf cache
       dnf:
         update_cache: yes
