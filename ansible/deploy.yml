@@ -28,14 +28,10 @@
       copy:
         content: |
           Host github.com
-            HostName github.com
-            User git
-            IdentityFile ~/.ssh/github_deploy_key
-            StrictHostKeyChecking no
+            IdentityFile /home/{{ app_user }}/.ssh/github_deploy_key
         dest: "/home/{{ app_user }}/.ssh/config"
         mode: '0600'
         owner: "{{ app_user }}"
-        group: "{{ app_user }}"
 
     - name: Update dnf cache
       dnf:
@@ -72,6 +68,7 @@
         dest: "{{ app_dir }}"
         version: main
         force: yes
+        key_file: "~/.ssh/id_rsa"
       become_user: "{{ app_user }}"
 
     - name: Install app dependencies
