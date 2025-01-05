@@ -26,12 +26,13 @@ jobs:
 
       - name: Set up SSH key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          ls -la ~/.ssh/id_rsa || echo "SSH key not found"
-          cat ~/.ssh/known_hosts || echo "known_hosts empty"
+          set -x  # Enable debug mode
+          mkdir -p ~/.ssh || { echo "Failed to create .ssh directory"; exit 1; }
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa || { echo "Failed to write SSH key"; exit 1; }
+          chmod 600 ~/.ssh/id_rsa || { echo "Failed to set permissions"; exit 1; }
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>&1 || { echo "Failed to scan host key"; exit 1; }
+          ls -la ~/.ssh/id_rsa
+          ssh -v -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} 'echo "SSH connection test"' || { echo "Failed to connect via SSH"; exit 1; }
 
       - name: Run Ansible playbook
         run: |
