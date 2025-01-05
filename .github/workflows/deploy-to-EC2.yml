@@ -29,10 +29,15 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          ls -la ~/.ssh/id_rsa || echo "SSH key not found"
+          cat ~/.ssh/known_hosts || echo "known_hosts empty"
 
       - name: Run Ansible playbook
-        run: ansible-playbook -i ansible/inventory.yml ansible/deploy.yml
+        run: |
+          ansible --version
+          ansible-inventory --list -i ansible/inventory.yml
+          ANSIBLE_DEBUG=1 ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -vvv
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
