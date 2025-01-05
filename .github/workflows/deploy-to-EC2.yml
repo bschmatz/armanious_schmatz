@@ -29,7 +29,7 @@ jobs:
           echo "Waiting for instance to complete setup..."
           sleep 30  # Wait 30 seconds for user_data script to complete
 
-      - name: Set up SSH key # comment to trigger pipeline
+      - name: Set up SSH key
         run: |
           set -x  # Enable debug mode
           mkdir -p /home/runner/.ssh
