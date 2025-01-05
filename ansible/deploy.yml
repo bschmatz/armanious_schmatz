@@ -1,0 +1,73 @@
+---
+- name: Deploy React Tasklist to AWS EC2
+  hosts: tasklist_server
+  become: yes
+  vars:
+    app_dir: /var/www/tasklist
+    app_user: straumandi
+    node_version: 20
+
+  tasks:
+    - name: Update dnf cache
+      dnf:
+        update_cache: yes
+      when: ansible_distribution == 'Amazon'
+
+    - name: Install required packages
+      dnf:
+        name:
+          - nodejs
+          - npm
+          - git
+          - python3-pip
+        state: present
+
+    - name: Ensure app directory exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Add GitHub to known hosts
+      known_hosts:
+        name: github.com
+        key: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        state: present
+      become_user: "{{ app_user }}"
+
+    - name: Pull latest code from repository
+      git:
+        repo: "git@github.com:straumandi/armanious_schmatz.git"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+      become_user: "{{ app_user }}"
+
+    - name: Install app dependencies
+      npm:
+        path: "{{ app_dir }}"
+        ci: yes
+      become_user: "{{ app_user }}"
+
+    - name: Copy environment file
+      copy:
+        content: |
+          NODE_ENV=production
+          PORT=3000
+        dest: "{{ app_dir }}/.env"
+        owner: "{{ app_user }}"
+        mode: '0600'
+
+    - name: Install PM2 globally
+      npm:
+        name: pm2
+        global: yes
+        state: present
+
+    - name: Start/restart application with PM2
+      command: pm2 restart ecosystem.config.js --update-env
+      args:
+        chdir: "{{ app_dir }}"
+      become_user: "{{ app_user }}"

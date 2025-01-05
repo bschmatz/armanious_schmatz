@@ -69,3 +69,6 @@ $RECYCLE.BIN/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+# Terraform provider files
+terraform-provider*
