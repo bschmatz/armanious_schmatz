@@ -29,6 +29,13 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
