@@ -38,7 +38,7 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 - [ ] Automatisierte Code-Qualitätsanalyse: Setze statische Code-Analyse-Tools ein, um Codequalität automatisiert zu überprüfen.
 
 ### 10% Testing (Armanious, Schmatz)
-- [ ] (Unit) Tests geschrieben und automatisiert
+- [x] (Unit) Tests geschrieben und automatisiert
 - [ ] Integrationstests implementiert (optional)
 - [ ] End-to-End Tests eingerichtet (optional)
 
