@@ -30,9 +30,9 @@ jobs:
           mkdir -p ~/.ssh || { echo "Failed to create .ssh directory"; exit 1; }
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa || { echo "Failed to write SSH key"; exit 1; }
           chmod 600 ~/.ssh/id_rsa || { echo "Failed to set permissions"; exit 1; }
-          ssh-keyscan -H 52.57.97.250 >> ~/.ssh/known_hosts 2>&1 || { echo "Failed to scan host key"; exit 1; }
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>&1 || { echo "Failed to scan host key"; exit 1; }
           ls -la ~/.ssh/id_rsa
-          ssh -v -o StrictHostKeyChecking=no 52.57.97.250 'echo "SSH connection test"' || { echo "Failed to connect via SSH"; exit 1; }
+          ssh -v -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} 'echo "SSH connection test"' || { echo "Failed to connect via SSH"; exit 1; }
 
       - name: Run Ansible playbook
         run: |
@@ -40,5 +40,5 @@ jobs:
           ansible-inventory --list -i ansible/inventory.yml
           ANSIBLE_DEBUG=1 ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -vvv
         env:
-          EC2_HOST: 52.57.97.250
+          EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
