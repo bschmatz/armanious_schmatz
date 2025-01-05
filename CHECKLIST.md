@@ -33,12 +33,12 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 
 ### 10% Automatisierung (Armanious, Schmatz)
 - [ ] Automatisierte Builds eingerichtet
-- [ ] Automatisierte Tests implementiert
+- [x] Automatisierte Tests implementiert
 - [ ] Automatisierte Deployments konfiguriert
 - [ ] Automatisierte Code-Qualitätsanalyse: Setze statische Code-Analyse-Tools ein, um Codequalität automatisiert zu überprüfen.
 
 ### 10% Testing (Armanious, Schmatz)
-- [ ] (Unit) Tests geschrieben und automatisiert
+- [x] (Unit) Tests geschrieben und automatisiert
 - [ ] Integrationstests implementiert (optional)
 - [ ] End-to-End Tests eingerichtet (optional)
 
