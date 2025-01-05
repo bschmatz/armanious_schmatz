@@ -6,7 +6,7 @@ on:
     types:
       - completed
     branches:
-      - main
+      - setup-infrastructure-as-code
 
 jobs:
   deploy:
