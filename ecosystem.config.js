@@ -14,7 +14,7 @@
  * - Restart app: pm2 restart react-tasklist
  */
 
-module.exports = {
+export default {
   apps: [
     {
       // Name that shows up in PM2 dashboard and logs
