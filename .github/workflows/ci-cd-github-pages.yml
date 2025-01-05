@@ -7,11 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -22,9 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # TODO: Uncomment the following lines when linter setup and test file are done.
-      #   - name: Run linter
-      #     run: npm run lint
+      # Uncomment the following lines when linter setup and test files are ready.
+      # - name: Run linter
+      #   run: npm run lint
 
       # - name: Run tests
       #   run: npm test
