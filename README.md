@@ -20,7 +20,8 @@ This demo project serves to demonstrate Continuous Delivery practices. It consis
 ```
 /
 ├── docu/             # Project documentation
-│   ├── branching.md  # Branching strategy
+│   ├── branching_strategy.md  # Branching strategy
+│   ├── general.md  # General project documentation (implementaion details, etc.)
 │   └── ...
 ```
 
