@@ -22,9 +22,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Uncomment the following lines when linter setup and test files are ready.
-      # - name: Run linter
-      #   run: npm run lint
+      - name: Run linter
+        run: npm run lint
 
       - name: Run tests
         run: npm test
