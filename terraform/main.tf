@@ -18,12 +18,20 @@ resource "aws_instance" "app_server" {
               #!/bin/bash
               dnf update -y
               dnf install -y nodejs npm git python3-pip
-              # Create your user
+              
+              # Create user and set up SSH
               useradd -m -s /bin/bash straumandi
               echo "straumandi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/straumandi
+              
+              # Set up SSH directory
               mkdir -p /home/straumandi/.ssh
-              chown -R straumandi:straumandi /home/straumandi/.ssh
               chmod 700 /home/straumandi/.ssh
+              
+              # Add the public key to authorized_keys
+              echo "${file("~/.ssh/tasklist_deploy_key.pub")}" > /home/straumandi/.ssh/authorized_keys
+              chmod 600 /home/straumandi/.ssh/authorized_keys
+              chown -R straumandi:straumandi /home/straumandi/.ssh
+              
               # App directory setup
               mkdir -p /var/www/tasklist
               chown straumandi:straumandi /var/www/tasklist
