@@ -16,26 +16,38 @@ resource "aws_instance" "app_server" {
 
   user_data = <<-EOF
               #!/bin/bash
+              set -ex # Enable debugging and exit on error
+
+              # System updates
               dnf update -y
               dnf install -y nodejs npm git python3-pip
-              
-              # Create user and set up SSH
-              useradd -m -s /bin/bash straumandi
+
+              # Create user with specific UID/GID and home directory
+              groupadd -g 2000 straumandi
+              useradd -u 2000 -g 2000 -m -s /bin/bash -d /home/straumandi straumandi
+
+              # Set up sudo access
               echo "straumandi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/straumandi
-              
-              # Set up SSH directory
-              mkdir -p /home/straumandi/.ssh
-              chmod 700 /home/straumandi/.ssh
-              
-              # Add the public key to authorized_keys
+              chmod 440 /etc/sudoers.d/straumandi
+
+              # Create and secure SSH directory
+              install -d -m 700 -o straumandi -g straumandi /home/straumandi/.ssh
+
+              # Add SSH key
               echo "${file("~/.ssh/tasklist_deploy_key.pub")}" > /home/straumandi/.ssh/authorized_keys
               chmod 600 /home/straumandi/.ssh/authorized_keys
-              chown -R straumandi:straumandi /home/straumandi/.ssh
-              
-              # App directory setup
-              mkdir -p /var/www/tasklist
-              chown straumandi:straumandi /var/www/tasklist
+              chown straumandi:straumandi /home/straumandi/.ssh/authorized_keys
+
+              # Create application directory with correct ownership
+              install -d -m 755 -o straumandi -g straumandi /var/www/tasklist
+
+              # Verify the setup
+              ls -la /home/straumandi/.ssh/
+              id straumandi
+              groups straumandi
+              cat /home/straumandi/.ssh/authorized_keys
               EOF
+
 }
 
 # Security Group

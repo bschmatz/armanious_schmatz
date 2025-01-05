@@ -24,16 +24,24 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
+      - name: Wait for instance setup
+        run: |
+          echo "Waiting for instance to complete setup..."
+          sleep 30  # Wait 30 seconds for user_data script to complete
+
       - name: Set up SSH key
         run: |
           set -x  # Enable debug mode
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          # First add the host key explicitly
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} > ~/.ssh/known_hosts 2>/dev/null
-          # Test connection with verbose output
-          ssh -v -o StrictHostKeyChecking=no straumandi@${{ secrets.EC2_HOST }} 'echo "SSH connection test"' || exit 1
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          # Add some debugging
+          echo "Attempting to scan host: ${{ secrets.EC2_HOST }}"
+          # Try scanning with more verbose output
+          ssh-keyscan -v -H ${{ secrets.EC2_HOST }} >> /home/runner/.ssh/known_hosts 2>&1
+          # Show the contents of known_hosts (excluding the key)
+          ls -la /home/runner/.ssh/
+          cat /home/runner/.ssh/known_hosts | wc -l
 
       - name: Run Ansible playbook
         run: |
