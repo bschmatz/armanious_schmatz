@@ -2,7 +2,7 @@
 all:
   hosts:
     tasklist_server:
-      ansible_host: "{{ lookup('env', 'EC2_HOST') }}" # newly created EC2 instance public IP is 52.57.97.250
+      ansible_host: "{{ lookup('env', 'EC2_HOST') }}" # newly created EC2 instance public IP is 3.127.65.8
       ansible_user: straumandi
       ansible_ssh_private_key_file: ~/.ssh/id_rsa # uses the key created in "Set up SSH key" step in .github/workflows/deploy-to-EC2.yml
       ansible_become: yes
