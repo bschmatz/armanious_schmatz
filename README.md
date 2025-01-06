@@ -10,11 +10,12 @@ This demo project serves to demonstrate Continuous Delivery practices. It consis
 - Documentation of the entire development process
 
 ## Technology Stack
-- **Frontend**: React + Vite
-- **Testing**: JEST
-- **CI/CD**: GitHub Actions
+- **Frontend**: React
+- **Testing**: Jest
+- **Linting**: ESLint
+- **Continuous Integration**: GitHub Actions
 - **Containerization**: Docker
-- **Deployment**: tbd
+- **Continuous Delivery**: Terraform, Ansible
 
 ## Project Structure
 ```
@@ -43,11 +44,13 @@ npm run dev
 ```
 
 ## CI/CD Pipeline
-The pipeline will cover the following aspects: (Details will follow)
+The pipeline covers the following aspects:
 - Automated tests
 - Code quality checks (Linting etc.)
 - Build process
-- Deployment process
+- EC2 Instance creation via Terraform
+- Deployment process to AWS EC2 using Ansible
 
 ## Documentation
 - [Branching Strategy](docu/branching_strategy.md)
+- [Pipeline Documentation](docu/general.md)
