@@ -27,19 +27,17 @@ jobs:
       - name: Set up SSH keys
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_PEM_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
+          chmod 644 ~/.ssh/id_rsa.pub
           chmod 700 ~/.ssh
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
 
-      - name: Debug SSH setup
-        run: |
-          ls -la ~/.ssh/
-          ssh -v straumandi@${{ secrets.EC2_HOST }}
+      - name: Test SSH connection
+        run: ssh -v straumandi@${{ secrets.EC2_HOST }} 'echo "SSH connection successful"'
 
       - name: Run Ansible playbook
         run: ansible-playbook -i ansible/inventory.yml ansible/deploy.yml
         env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
