@@ -35,7 +35,7 @@ jobs:
           # For EC2 access
           echo "${{ secrets.EC2_SSH_KEY }}" > /home/runner/.ssh/id_rsa
           # For GitHub access
-          echo "${{ secrets.REPO_DEPLOY_KEY }}" > /home/runner/.ssh/github_deploy_key
+          echo "${{ secrets.REPO_DEPLOY_KEY }}" | base64 -d > /home/runner/.ssh/github_deploy_key
           chmod 600 /home/runner/.ssh/id_rsa
           chmod 600 /home/runner/.ssh/github_deploy_key
 
