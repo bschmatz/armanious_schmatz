@@ -32,65 +32,12 @@
         group: "{{ app_user }}"
         mode: '0755'
 
-    - name: Ensure .ssh directory exists
-      file:
-        path: "/home/{{ app_user }}/.ssh"
-        state: directory
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-        mode: '0700'
-
-    - name: Copy GitHub deploy key
-      copy:
-        content: "{{ lookup('env', 'REPO_DEPLOY_KEY') }}"
-        dest: "/home/{{ app_user }}/.ssh/github_deploy_key"
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-        mode: '0600'
-
-    - name: Configure SSH for GitHub
-      copy:
-        dest: "/home/{{ app_user }}/.ssh/config"
-        content: |
-          Host github.com
-            HostName github.com
-            User git
-            IdentityFile ~/.ssh/github_deploy_key
-            StrictHostKeyChecking no
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-        mode: '0600'
-
-    - name: Debug - Check key content
-      command: cat /home/{{ app_user }}/.ssh/github_deploy_key
-      register: key_content
+    - name: Add GitHub to known hosts
+      known_hosts:
+        name: github.com
+        key: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+        state: present
       become_user: "{{ app_user }}"
-
-    - name: Debug - Show first line of key
-      debug:
-        msg: "First line of key: {{ key_content.stdout_lines[0] }}"
-
-    - name: Debug - Check key permissions and format
-      shell: |
-        ls -la /home/{{ app_user }}/.ssh/github_deploy_key
-        echo "Key format check:"
-        head -n1 /home/{{ app_user }}/.ssh/github_deploy_key | grep -E "^-----BEGIN .* PRIVATE KEY-----$" || echo "Invalid key format"
-      register: key_check
-      become_user: "{{ app_user }}"
-
-    - name: Debug - Show key check results
-      debug:
-        var: key_check.stdout_lines
-
-    - name: Debug - Test SSH connection to GitHub
-      shell: ssh -Tv git@github.com
-      register: ssh_test
-      become_user: "{{ app_user }}"
-      ignore_errors: yes
-
-    - name: Debug - Show SSH test results
-      debug:
-        var: ssh_test
 
     - name: Pull latest code from repository
       git:
@@ -99,6 +46,8 @@
         version: main
         force: yes
         accept_hostkey: yes
+      environment:
+        GIT_SSH_COMMAND: "ssh -i /home/straumandi/.ssh/github_deploy_key"
       become_user: "{{ app_user }}"
 
     - name: Install app dependencies
