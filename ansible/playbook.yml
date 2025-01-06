@@ -17,7 +17,7 @@
     - name: Pull Docker image
       docker_container:
         name: tasklist-react-app
-        image: "${{ secrets.DOCKER_USERNAME }}/tasklist-react-app:latest"
+        image: "{{ docker_image }}"
         state: started
         restart_policy: always
         published_ports:

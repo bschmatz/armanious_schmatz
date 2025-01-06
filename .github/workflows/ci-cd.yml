@@ -128,4 +128,4 @@ jobs:
       - name: Deploy with Ansible
         run: |
           cd ansible
-          ansible-playbook -i inventory.yml playbook.yml
+          ansible-playbook -i inventory.yml playbook.yml -e "docker_image=${{ secrets.DOCKER_USERNAME }}/tasklist-react-app:latest"
