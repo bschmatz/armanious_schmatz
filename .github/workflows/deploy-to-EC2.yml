@@ -38,6 +38,9 @@ jobs:
           echo "${{ secrets.REPO_DEPLOY_KEY }}" > /home/runner/.ssh/github_deploy_key
           chmod 600 /home/runner/.ssh/id_rsa
           chmod 600 /home/runner/.ssh/github_deploy_key
+          # Debug key format
+          echo "First line of deploy key:"
+          head -n 1 /home/runner/.ssh/github_deploy_key
 
       - name: Run Ansible playbook
         run: |

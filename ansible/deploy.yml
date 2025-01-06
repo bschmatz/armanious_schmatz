@@ -35,6 +35,41 @@
       ansible.builtin.debug:
         var: key_content.stdout_lines
 
+    - name: Debug - Check key existence
+      stat:
+        path: "/home/{{ app_user }}/.ssh/github_deploy_key"
+      register: key_stat
+
+    - name: Debug - Show key file info
+      debug:
+        msg: 
+          - "Key exists: {{ key_stat.stat.exists }}"
+          - "Key permissions: {{ key_stat.stat.mode }}"
+          - "Key owner: {{ key_stat.stat.pw_name }}"
+
+    - name: Debug - Check key content format
+      shell: |
+        head -n 1 /home/{{ app_user }}/.ssh/github_deploy_key
+      register: key_header
+      become: yes
+      become_user: "{{ app_user }}"
+
+    - name: Debug - Show key header
+      debug:
+        msg: "Key starts with: {{ key_header.stdout }}"
+
+    - name: Debug - Test SSH connection
+      shell: |
+        ssh -Tv git@github.com
+      register: ssh_test
+      become: yes
+      become_user: "{{ app_user }}"
+      ignore_errors: yes
+
+    - name: Debug - Show SSH test result
+      debug:
+        msg: "{{ ssh_test.stderr_lines }}"
+
     - name: Configure SSH for GitHub
       copy:
         content: |
