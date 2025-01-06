@@ -14,7 +14,7 @@ This demo project serves to demonstrate Continuous Delivery practices. It consis
 - **Testing**: JEST
 - **CI/CD**: GitHub Actions
 - **Containerization**: Docker
-- **Deployment**: tbd
+- **Deployment**: Github Actions, Terraform, Ansible, AWS EC2
 
 ## Project Structure
 ```
@@ -43,11 +43,13 @@ npm run dev
 ```
 
 ## CI/CD Pipeline
-The pipeline will cover the following aspects: (Details will follow)
+The pipeline covers the following aspects:
 - Automated tests
 - Code quality checks (Linting etc.)
 - Build process
-- Deployment process
+- EC2 Instance creation via Terraform
+- Deployment process to AWS EC2 using Ansible
 
 ## Documentation
 - [Branching Strategy](docu/branching_strategy.md)
+- [Pipeline Documentation](docu/general.md)
