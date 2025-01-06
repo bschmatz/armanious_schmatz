@@ -29,25 +29,19 @@ jobs:
           echo "Waiting for instance to complete setup..."
           sleep 30  # Wait 30 seconds for user_data script to complete
 
-      - name: Set up SSH key
+      - name: Set up SSH keys
+        env:
+          REPO_DEPLOY_KEY: ${{ secrets.REPO_DEPLOY_KEY }}
         run: |
           mkdir -p /home/runner/.ssh
-          # For EC2 access
-          echo "${{ secrets.EC2_SSH_KEY }}" > /home/runner/.ssh/id_rsa
-          # For GitHub access
-          echo "${{ secrets.REPO_DEPLOY_KEY }}" > /home/runner/.ssh/github_deploy_key
-          chmod 600 /home/runner/.ssh/id_rsa
-          chmod 600 /home/runner/.ssh/github_deploy_key
-          # Debug key format
-          echo "First line of deploy key:"
-          head -n 1 /home/runner/.ssh/github_deploy_key
+          # Start ssh-agent
+          eval $(ssh-agent -s)
+          # Add the key to ssh-agent
+          echo "$REPO_DEPLOY_KEY" | tr -d '\r' | ssh-add -
 
       - name: Run Ansible playbook
         run: |
-          ansible --version
-          ansible-inventory --list -i ansible/inventory.yml
-          ANSIBLE_DEBUG=1 ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -vvv
+          ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -vv
         env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
           REPO_DEPLOY_KEY: ${{ secrets.REPO_DEPLOY_KEY }}

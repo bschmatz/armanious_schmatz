@@ -74,7 +74,8 @@
       copy:
         content: |
           Host github.com
-            IdentityFile /home/{{ app_user }}/.ssh/github_deploy_key
+            User git
+            StrictHostKeyChecking no
         dest: "/home/{{ app_user }}/.ssh/config"
         mode: '0600'
         owner: "{{ app_user }}"
@@ -114,10 +115,8 @@
         dest: "{{ app_dir }}"
         version: main
         force: yes
-        key_file: "/home/{{ app_user }}/.ssh/github_deploy_key"
+        accept_hostkey: yes
       become_user: "{{ app_user }}"
-      environment:
-        GIT_SSH_COMMAND: "ssh -vvv" # Enable verbose output for debugging
 
     - name: Install app dependencies
       npm:
