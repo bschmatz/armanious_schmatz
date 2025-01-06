@@ -1,3 +1,7 @@
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -10,12 +14,12 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.web.id]
 
   tags = {
-    Name = "vite-react-app"
+    Name = "tasklist-react-app"
   }
 }
 
 resource "aws_security_group" "web" {
-  name = "web-app-sg"
+  name = "tasklist-app-sg-${random_id.suffix.hex}"
 
   ingress {
     from_port   = 80
