@@ -1,4 +1,3 @@
----
 - name: Deploy React Tasklist to AWS EC2
   hosts: tasklist_server
   become: yes
@@ -8,82 +7,13 @@
     node_version: 20
 
   tasks:
-    - name: Ensure .ssh directory exists
-      file:
-        path: "/home/{{ app_user }}/.ssh"
-        state: directory
-        mode: '0700'
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-
-    - name: Add GitHub deploy key
-      copy:
-        content: "{{ lookup('env', 'REPO_DEPLOY_KEY') }}"
-        dest: "/home/{{ app_user }}/.ssh/github_deploy_key"
-        mode: '0600'
-        owner: "{{ app_user }}"
-        group: "{{ app_user }}"
-
-    - name: Debug key format
-      ansible.builtin.shell: |
-        cat /home/{{ app_user }}/.ssh/github_deploy_key
-      become: yes
-      become_user: "{{ app_user }}"
-      register: key_content
-
-    - name: Display key format
-      ansible.builtin.debug:
-        var: key_content.stdout_lines
-
-    - name: Debug - Check key existence
-      stat:
-        path: "/home/{{ app_user }}/.ssh/github_deploy_key"
-      register: key_stat
-
-    - name: Debug - Show key file info
-      debug:
-        msg: 
-          - "Key exists: {{ key_stat.stat.exists }}"
-          - "Key permissions: {{ key_stat.stat.mode }}"
-          - "Key owner: {{ key_stat.stat.pw_name }}"
-
-    - name: Debug - Check key content format
-      shell: |
-        head -n 1 /home/{{ app_user }}/.ssh/github_deploy_key
-      register: key_header
-      become: yes
-      become_user: "{{ app_user }}"
-
-    - name: Debug - Show key header
-      debug:
-        msg: "Key starts with: {{ key_header.stdout }}"
-
-    - name: Debug - Test SSH connection
-      shell: |
-        ssh -Tv git@github.com
-      register: ssh_test
-      become: yes
-      become_user: "{{ app_user }}"
-      ignore_errors: yes
-
-    - name: Debug - Show SSH test result
-      debug:
-        msg: "{{ ssh_test.stderr_lines }}"
-
-    - name: Configure SSH for GitHub
-      copy:
-        content: |
-          Host github.com
-            User git
-            StrictHostKeyChecking no
-        dest: "/home/{{ app_user }}/.ssh/config"
-        mode: '0600'
-        owner: "{{ app_user }}"
-
     - name: Update dnf cache
       dnf:
+        name: 
+        - nodejs
+        - npm
+        state: present
         update_cache: yes
-      when: ansible_distribution == 'Amazon'
 
     - name: Install required packages
       dnf:
@@ -128,7 +58,7 @@
       copy:
         content: |
           NODE_ENV=production
-          PORT=3000
+          PORT=5173
         dest: "{{ app_dir }}/.env"
         owner: "{{ app_user }}"
         mode: '0600'

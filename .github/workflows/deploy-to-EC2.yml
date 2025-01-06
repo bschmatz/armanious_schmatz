@@ -9,6 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: success()
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,24 +25,15 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Wait for instance setup
+      - name: Set up SSH key
         run: |
-          echo "Waiting for instance to complete setup..."
-          sleep 30  # Wait 30 seconds for user_data script to complete
-
-      - name: Set up SSH keys
-        env:
-          REPO_DEPLOY_KEY: ${{ secrets.REPO_DEPLOY_KEY }}
-        run: |
-          mkdir -p /home/runner/.ssh
-          # Start ssh-agent
-          eval $(ssh-agent -s)
-          # Add the key to ssh-agent
-          echo "$REPO_DEPLOY_KEY" | tr -d '\r' | ssh-add -
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Run Ansible playbook
-        run: |
-          ansible-playbook -i ansible/inventory.yml ansible/deploy.yml -vv
+        run: ansible-playbook -i ansible/inventory.yml ansible/deploy.yml
         env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
           ANSIBLE_HOST_KEY_CHECKING: false
-          REPO_DEPLOY_KEY: ${{ secrets.REPO_DEPLOY_KEY }}
