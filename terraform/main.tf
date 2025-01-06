@@ -1,25 +1,12 @@
-provider "aws" {
-  region = var.aws_region
-}
-
-data "aws_instances" "existing" {
-  filter {
-    name   = "tag:Name"
-    values = ["tasklist-react-app"]
-  }
-
-  filter {
-    name   = "instance-state-name"
-    values = ["running", "stopped"]
-  }
-}
-
 resource "random_id" "suffix" {
   byte_length = 4
 }
 
+provider "aws" {
+  region = var.aws_region
+}
+
 resource "aws_instance" "web" {
-  count         = length(data.aws_instances.existing.ids) == 0 ? 1 : 0
   ami           = var.ami_id
   instance_type = "t2.micro"
   key_name      = var.key_name
@@ -28,16 +15,6 @@ resource "aws_instance" "web" {
 
   tags = {
     Name = "tasklist-react-app"
-  }
-}
-
-resource "null_resource" "instance_manager" {
-  triggers = {
-    instance_id = length(data.aws_instances.existing.ids) > 0 ? data.aws_instances.existing.ids[0] : aws_instance.web[0].id
-  }
-
-  provisioner "local-exec" {
-    command = "aws ec2 start-instances --instance-ids ${self.triggers.instance_id}"
   }
 }
 
