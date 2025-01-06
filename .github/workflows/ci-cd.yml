@@ -38,6 +38,7 @@ jobs:
           path: ./dist
 
       - name: Set up Docker Buildx
+        if: github.ref == 'refs/heads/main'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
@@ -78,9 +79,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment:
       name: production
-      url: ${{ steps.terraform.outputs.instance_ip }}
+      url: ${{ steps.get_ip.outputs.instance_ip }}
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [ build ]
     steps:
       - uses: actions/checkout@v4
 
@@ -100,11 +101,15 @@ jobs:
           terraform init
 
       - name: Terraform Apply
-        id: terraform
         run: |
           cd terraform
           terraform apply -auto-approve
-          echo "instance_ip=$(terraform output -raw instance_ip)" >> $GITHUB_OUTPUT
+
+      - name: Get Instance IP
+        id: get_ip
+        run: |
+          cd terraform
+          echo "instance_ip=http://$(terraform output -raw instance_ip)" >> $GITHUB_OUTPUT
 
       - name: Install Ansible
         run: |
@@ -123,7 +128,7 @@ jobs:
           echo "all:" > ansible/inventory.yml
           echo "  hosts:" >> ansible/inventory.yml
           echo "    web:" >> ansible/inventory.yml
-          echo "      ansible_host: ${{ steps.terraform.outputs.instance_ip }}" >> ansible/inventory.yml
+          echo "      ansible_host: ${{ steps.get_ip.outputs.instance_ip }}" >> ansible/inventory.yml
           echo "      ansible_user: ubuntu" >> ansible/inventory.yml
           echo "      ansible_ssh_private_key_file: ~/.ssh/id_rsa" >> ansible/inventory.yml
 
