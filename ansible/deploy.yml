@@ -68,8 +68,10 @@
         dest: "{{ app_dir }}"
         version: main
         force: yes
-        key_file: "~/.ssh/id_rsa"
+        key_file: "/home/{{ app_user }}/.ssh/github_deploy_key"
       become_user: "{{ app_user }}"
+      environment:
+        GIT_SSH_COMMAND: "ssh -vvv" # Enable verbose output for debugging
 
     - name: Install app dependencies
       npm:
