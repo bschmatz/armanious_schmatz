@@ -111,11 +111,6 @@ jobs:
           cd terraform
           echo "instance_ip=$(terraform output -raw instance_ip)" >> $GITHUB_OUTPUT
 
-      - name: Wait for Instance
-        run: |
-          # Wait for instance to be ready
-          sleep 30
-
       - name: Install Ansible
         run: |
           sudo apt update
