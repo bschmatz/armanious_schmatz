@@ -10,11 +10,12 @@ This demo project serves to demonstrate Continuous Delivery practices. It consis
 - Documentation of the entire development process
 
 ## Technology Stack
-- **Frontend**: React + Vite
-- **Testing**: JEST
-- **CI/CD**: GitHub Actions
+- **Frontend**: React
+- **Testing**: Jest
+- **Linting**: ESLint
+- **Continuous Integration**: GitHub Actions
 - **Containerization**: Docker
-- **Deployment**: Github Actions, Terraform, Ansible, AWS EC2
+- **Continuous Delivery**: Terraform, Ansible
 
 ## Project Structure
 ```
