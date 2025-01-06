@@ -4,7 +4,7 @@ all:
     tasklist_server:
       ansible_host: 18.198.41.115 # newly created EC2 instance public IP, changes every time the instance is restarted
       ansible_user: straumandi
-      ansible_ssh_private_key_file: ~/.ssh/tasklist.pem # uses the key created in "Set up SSH key" step in .github/workflows/deploy-to-EC2.yml
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa # uses the key created in "Set up SSH key" step in .github/workflows/deploy-to-EC2.yml
       ansible_become: yes
       ansible_become_method: sudo
       ansible_python_interpreter: python3

@@ -27,11 +27,16 @@ jobs:
       - name: Set up SSH keys
         run: |
           mkdir -p ~/.ssh
-          # EC2 SSH key (.pem file)
           echo "${{ secrets.EC2_PEM_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          # Add known hosts
+          chmod 700 ~/.ssh
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Debug SSH setup
+        run: |
+          ls -la ~/.ssh/
+          ssh -v straumandi@${{ secrets.EC2_HOST }}
 
       - name: Run Ansible playbook
         run: ansible-playbook -i ansible/inventory.yml ansible/deploy.yml
