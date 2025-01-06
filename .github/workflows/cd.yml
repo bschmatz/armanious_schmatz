@@ -5,12 +5,9 @@ on:
     workflows: ["Continuous Integration"]
     types:
       - completed
-    branches:
-      - main
 
 jobs:
   deploy-pages:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -38,7 +35,6 @@ jobs:
         uses: actions/deploy-pages@v4
 
   deploy-aws:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: production
       url: ${{ steps.terraform.outputs.instance_ip }}
