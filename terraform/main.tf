@@ -1,70 +1,23 @@
 provider "aws" {
-  region = "eu-central-1"  # Frankfurt
+  region = var.aws_region
 }
 
-# EC2 Instance
-resource "aws_instance" "app_server" {
-  ami           = "ami-0669b163befffbdfc"  # Amazon Linux 2023 AMI in eu-central-1
+resource "aws_instance" "web" {
+  ami           = var.ami_id
   instance_type = "t2.micro"
-  key_name      = aws_key_pair.deployer.key_name
+  key_name      = var.key_name
 
-  vpc_security_group_ids = [aws_security_group.allow_web.id]
-  
+  vpc_security_group_ids = [aws_security_group.web.id]
+
   tags = {
-    Name = "tasklist-app"
+    Name = "vite-react-app"
   }
-
-  user_data = <<-EOF
-              #!/bin/bash
-              set -ex # Enable debugging and exit on error
-
-              # System updates
-              dnf update -y
-              dnf install -y nodejs npm git python3-pip
-
-              # Create user with specific UID/GID and home directory
-              groupadd -g 2000 straumandi
-              useradd -u 2000 -g 2000 -m -s /bin/bash -d /home/straumandi straumandi
-
-              # Set up sudo access
-              echo "straumandi ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/straumandi
-              chmod 440 /etc/sudoers.d/straumandi
-
-              # Create and secure SSH directory
-              install -d -m 700 -o straumandi -g straumandi /home/straumandi/.ssh
-
-              # Add SSH key
-              echo "${file("~/.ssh/tasklist_deploy_key.pub")}" > /home/straumandi/.ssh/authorized_keys
-              chmod 600 /home/straumandi/.ssh/authorized_keys
-              chown straumandi:straumandi /home/straumandi/.ssh/authorized_keys
-
-              # Create application directory with correct ownership
-              install -d -m 755 -o straumandi -g straumandi /var/www/tasklist
-
-              # Verify the setup
-              ls -la /home/straumandi/.ssh/
-              id straumandi
-              groups straumandi
-              cat /home/straumandi/.ssh/authorized_keys
-              EOF
-
 }
 
-# Security Group
-resource "aws_security_group" "allow_web" {
-  name        = "allow_web_traffic"
-  description = "Allow Web inbound traffic"
+resource "aws_security_group" "web" {
+  name = "web-app-sg"
 
   ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -72,9 +25,8 @@ resource "aws_security_group" "allow_web" {
   }
 
   ingress {
-    description = "App Port"
-    from_port   = 5173
-    to_port     = 5173
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -85,19 +37,4 @@ resource "aws_security_group" "allow_web" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = {
-    Name = "allow_web"
-  }
-}
-
-# SSH Key
-resource "aws_key_pair" "deployer" {
-  key_name   = "tasklist-key"
-  public_key = file("~/.ssh/tasklist_deploy_key.pub")  # my local public key
-}
-
-# Output the public IP
-output "public_ip" {
-  value = aws_instance.app_server.public_ip
 }

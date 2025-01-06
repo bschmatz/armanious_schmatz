@@ -70,5 +70,7 @@ $RECYCLE.BIN/
 !.yarn/versions
 .pnp.*
 
+*.secrets
+
 # Terraform provider files
 terraform-provider*
