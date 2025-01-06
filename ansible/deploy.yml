@@ -18,7 +18,7 @@
 
     - name: Add GitHub deploy key
       copy:
-        content: "{{ lookup('env', 'REPO_DEPLOY_KEY') | b64decode }}"
+        content: "{{ lookup('env', 'REPO_DEPLOY_KEY') }}"
         dest: "/home/{{ app_user }}/.ssh/github_deploy_key"
         mode: '0600'
         owner: "{{ app_user }}"
