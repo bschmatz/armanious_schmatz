@@ -20,16 +20,29 @@
         state: started
         enabled: yes
 
-    - name: Pull Docker image
+    - name: Copy application files
+      synchronize:
+        src: ../
+        dest: /app
+        delete: yes
+        exclude:
+          - node_modules
+          - .git
+          - terraform
+          - ansible
+
+    - name: Build Docker image locally
       docker_image:
-        name: "{{ docker_image }}:{{ docker_tag }}"
-        source: pull
-        force_source: yes
+        name: tasklist-react-app
+        source: build
+        build:
+          path: /app
+        state: present
 
     - name: Run Docker container
       docker_container:
-        name: vite-react-app
-        image: "{{ docker_image }}:{{ docker_tag }}"
+        name: tasklist-react-app
+        image: tasklist-react-app:latest
         state: started
         restart_policy: always
         published_ports:
