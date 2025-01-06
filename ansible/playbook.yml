@@ -2,17 +2,11 @@
 - hosts: all
   become: yes
   tasks:
-    - name: Install required packages
+    - name: Install Docker
       apt:
-        name:
-          - docker.io
-          - python3-pip
+        name: docker.io
         state: present
         update_cache: yes
-
-    - name: Install Docker Python module
-      pip:
-        name: docker
 
     - name: Start Docker service
       service:
@@ -20,31 +14,12 @@
         state: started
         enabled: yes
 
-    - name: Copy application files
-      synchronize:
-        src: ../
-        dest: /app
-        delete: yes
-        exclude:
-          - node_modules
-          - .git
-          - terraform
-          - ansible
-
-    - name: Build Docker image locally
-      docker_image:
-        name: tasklist-react-app
-        source: build
-        build:
-          path: /app
-        state: present
-
-    - name: Run Docker container
+    - name: Pull Docker image
       docker_container:
         name: tasklist-react-app
-        image: tasklist-react-app:latest
+        image: "${{ secrets.DOCKER_USERNAME }}/tasklist-react-app:latest"
         state: started
         restart_policy: always
         published_ports:
           - "80:80"
-        recreate: yes
+        pull: yes
