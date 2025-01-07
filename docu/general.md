@@ -83,7 +83,7 @@ Configures the EC2 instance and deploys the application:
 
 ## Security
 
-### Secret Management
+### Secret Management (Github Secrets)
 The pipeline requires the following secrets:
 - `DOCKER_USERNAME`: Docker Hub username
 - `DOCKER_TOKEN`: Docker Hub access token
