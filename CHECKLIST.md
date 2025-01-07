@@ -21,9 +21,9 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 ### Einführung und Grundlagen
 - [x] Verständnis von Continuous Delivery und dessen Bedeutung
 - [x] Unterschiede zwischen Continuous Integration, Continuous Delivery und Continuous Deployment
-- [ ] CI-Anti Pattern identifizieren
+- [x] CI-Anti Pattern identifizieren
 
-### 20% Projekt Setup
+### 20% Projekt Setup (Armanious, Schmatz)
 - [x] Initialisierung des Repository (Git) -> (Blank Project + Project Name = nachname) 
 - [x] Checkliste kopieren und in neues geklontes Repository/project einfügen
 - [x] Checkliste versionieren
@@ -46,26 +46,27 @@ Es wird dringend empfohlen, diese Checkliste in Ihr eigenes Projekt-Repository z
 - [x] Deployment-Strategien identifizieren
 - [ ] Rollback-Strategien (optional)
 
-###10% Containerisierung (Armanious, Schmatz)
+### 10% Containerisierung (Armanious, Schmatz)
 - [x] Docker oder ähnliche Technologien eingesetzt
 - [x] Integration in eine Build-Pipeline
 
-### 20% Infrastruktur- und Konfigurationsmanagement
+### 20% Infrastruktur- und Konfigurationsmanagement (Armanious, Schmatz)
 - [x] Template Konfigurationsdateien versioniert und zentralisiert (GitHub Secrets)
 - [x] Konfigurationsdateien ausgenommen (GitHub Secrets)
 - [x] Verwendung in einer Build-Pipeline
 - [x] Infrastructure as Code (IaC): Nutze Tools wie Terraform oder Ansible, um die Infrastruktur als Code zu verwalten und sicherzustellen, dass Deployments wiederholbar sind.
 
-### 10% Sicherheit
+### 10% Sicherheit (Schmatz)
 - [x] Zugangsdaten sicher hinterlegt (Secrets)
-- [ ] Sicherheitsüberprüfungen: Integriere automatisierte Sicherheitstests (z. B. OWASP ZAP) in die Pipeline, um potenzielle Sicherheitslücken frühzeitig zu erkennen.
+- [x] Sicherheitsüberprüfungen: Integriere automatisierte Sicherheitstests (z. B. OWASP ZAP) in die Pipeline, um potenzielle Sicherheitslücken frühzeitig zu erkennen.
 
-### Datenbanken
+### Datenbanken und Persistenz (Armanious)
+- [x] LocalStorage 
 - [ ] Datenbank-Migrationen automatisiert
 - [ ] Datenbank-Backups und Recovery-Pläne
 
-### 20% Abschluss und Dokumentation (Schmatz)
-- [ ] Projekt-Dokumentation vervollständigt
+### 20% Abschluss und Dokumentation (Armanious, Schmatz)
+- [x] Projekt-Dokumentation vervollständigt
 - [x] Branching-Strategie dokumentieren: Definiere eine Branching-Strategie (z. B. GitFlow) und dokumentiere die Entscheidungsfindung.
 - [x] Pipeline-Dokumentation: Erstelle eine vollständige technische Dokumentation deiner CI/CD-Pipeline, einschließlich aller verwendeten Tools, Skripte und Konfigurationen.
 - [x] Build Pipeline spezifizieren: Stelle sicher, dass alle Schritte der CI/CD-Pipeline klar definiert sind, inklusive Test-, Build- und Deployment-Schritte.
