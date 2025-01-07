@@ -1,0 +1,21 @@
+pluginid	alert	risk	reliability	desc	solution	otherinfo
+10010	Cookie No HttpOnly Flag	Low	Warning	A cookie has been set without the HttpOnly flag	Ensure that the HttpOnly flag is set for all cookies	Session cookies should have the HttpOnly flag
+10011	Cookie Without Secure Flag	Low	Warning	A cookie has been set without the secure flag	Ensure that the secure flag is set for all cookies that contain sensitive information	Session cookies should have the secure flag
+10015	Incomplete or No Cache-control	Low	Warning	Cache-control header is missing or incomplete	Set the cache-control header appropriately	Cache-control directives should be set to prevent sensitive information from being cached
+10016	Web Browser XSS Protection Not Enabled	Low	Warning	Web Browser XSS Protection is not enabled	Ensure that the X-XSS-Protection header is set to '1; mode=block'	The X-XSS-Protection header should be enabled
+10017	Cross-Domain JavaScript Source File Inclusion	Low	Warning	The page includes JavaScript files from external domains	Ensure that JavaScript source files are loaded only from trusted domains	External JavaScript files should be reviewed
+10019	Content-Type Header Missing	Low	Warning	The Content-Type header is missing	Ensure that the Content-Type header is set appropriately	All responses should have a Content-Type header
+10020	X-Frame-Options Header Not Set	Medium	Warning	X-Frame-Options header is not set	Ensure that the X-Frame-Options header is set to DENY or SAMEORIGIN	Pages should not be embedded in frames
+10021	X-Content-Type-Options Header Missing	Low	Warning	The X-Content-Type-Options header is missing	Set the X-Content-Type-Options header to 'nosniff'	Prevents MIME-sniffing
+10024	Information Disclosure - Sensitive Information in URL	Medium	Warning	Sensitive information may be disclosed in URLs	Avoid including sensitive information in URLs	URLs should not contain sensitive data
+10027	Information Disclosure - Suspicious Comments	Low	Warning	The response contains suspicious comments	Remove suspicious HTML/JavaScript comments	Comments should not contain sensitive information
+10032	Viewstate without MAC	Medium	Warning	Viewstate is not protected with MAC	Enable ViewState MAC	ViewState should be protected
+10040	Secure Pages Include Mixed Content	Medium	Warning	HTTPS page includes HTTP content	Ensure all content is loaded via HTTPS	Mixed content should be avoided
+10054	Cookie Without SameSite Attribute	Low	Warning	A cookie has been set without the SameSite attribute	Set the SameSite attribute for cookies	Cookies should have the SameSite attribute set
+10055	CSP Scanner	Medium	Warning	Content Security Policy (CSP) is missing or inadequate	Implement a strong Content Security Policy	CSP helps prevent XSS and other injection attacks
+10098	Cross-Domain Misconfiguration	Medium	Warning	Cross-Domain Resource Sharing misconfiguration	Configure CORS headers appropriately	CORS should be properly configured
+10109	Modern Web Application	Low	Info	The application appears to be modern	Review security best practices for modern web applications	Modern web applications require specific security controls
+40012	Cross Site Scripting (Reflected)	High	Warning	Reflected Cross Site Scripting	Validate and encode all user input	User input should be properly sanitized
+40014	Cross Site Scripting (Persistent)	High	Warning	Persistent Cross Site Scripting	Validate and encode all user input	User input should be properly sanitized
+40018	SQL Injection	High	Warning	SQL injection might be possible	Use parameterized queries	User input should not be directly included in SQL queries
+90022	Application Error Disclosure	Medium	Warning	Application error messages may contain sensitive information	Implement proper error handling	Error messages should not reveal sensitive information
