@@ -23,6 +23,10 @@ The pipeline is triggered on:
 - **Cloud Provider**: AWS
 - **Container Registry**: Docker Hub
 
+### Security Tools
+- **OWASP Dependency Check**: Scans project dependencies for known vulnerabilities
+- **OWASP ZAP**: Performs security testing on the deployed application
+
 ## Pipeline Jobs
 
 ### 1. Build Job
@@ -35,14 +39,19 @@ The pipeline is triggered on:
     - Linting
     - Unit Testing
 5. Application Build
-6. Artifact Creation:
+6. Security Checks:
+    - OWASP ZAP Security Scan
+    - OWASP Dependency Check
+
+7. Artifact Creation:
     - GitHub Pages artifact
+    - Security scan reports
     - Docker image
 
 #### Docker Build Process
 The application uses a multi-stage Dockerfile:
 - Stage 1: Build environment
-    - Base image: `node:18`
+    - Base image: `node:20`
     - Builds the application
 - Stage 2: Production environment
     - Base image: `nginx:alpine`
@@ -88,6 +97,22 @@ The pipeline requires the following secrets:
 - SSH access is secured using key-based authentication
 - Docker Hub authentication for image pushes
 
+### Security Scanning
+- Automated dependency vulnerability scanning using OWASP Dependency Check
+  - Scans npm packages for known vulnerabilities
+  - Generates detailed reports of found vulnerabilities
+  - Can be configured to fail builds based on severity thresholds
+
+- Dynamic Application Security Testing with OWASP ZAP
+  - Automated security scanning of the deployed application
+  - Tests for common web vulnerabilities
+  - Includes checks for:
+    - SQL Injection
+    - Cross-Site Scripting (XSS)
+    - Broken Access Control
+    - Security Misconfigurations
+    - Other OWASP Top 10 risks
+
 ## AWS Infrastructure Configuration
 
 ### Region and AMI
@@ -110,13 +135,16 @@ Security group configuration:
 - EC2 instance health
 - Application container status
 - Nginx server status
+- Security scan reports and alerts
 
 ## Dependencies
 
 ### Required Tools
 - GitHub Actions runner
 - Node.js
-- Terraform:
+- Terraform
 - Ansible
 - Docker
 - Nginx
+- OWASP Dependency Check
+- OWASP ZAP
