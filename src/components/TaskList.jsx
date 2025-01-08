@@ -72,7 +72,7 @@ const TaskList = () => {
         <div className="task-card">
           <div className="task-header">
             <h1>Task Manager</h1>
-            <p>Organize your tasks efficiently</p>
+            <p>Organize your tasks efficiently (TEST)</p>
           </div>
           
           <div className="task-content">
